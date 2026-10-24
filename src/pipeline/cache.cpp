@@ -87,4 +87,5 @@ void saveImageSet(const std::string& path, const ImageSet& set) {
             out.write(id.data(), std::streamsize(id.size()));
         }
     });
+    
 }
