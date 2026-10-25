@@ -7,7 +7,7 @@
 
 namespace {
 
-const uint32_t kDatasetMagic = 0x56454331;   
+const uint32_t kDatasetMagic = 0x56454331;  
 const uint32_t kImageSetMagic = 0x494d4731;  
 
 template <class T>
@@ -58,4 +58,34 @@ void saveDataset(const std::string& path, const Dataset& data) {
         put(out, kDatasetMagic);
         putDataset(out, data);
     });
+}
+
+bool loadImageSet(const std::string& path, ImageSet& out) {
+    std::ifstream in(path, std::ios::binary);
+    uint32_t magic;
+    int64_t scanned;
+    if (!in || !get(in, magic) || magic != kImageSetMagic || !get(in, scanned)) return false;
+    if (!getDataset(in, out.vectors)) return false;
+    out.scanned = long(scanned);
+    out.ids.assign(out.vectors.n, "");
+    for (std::string& id : out.ids) {
+        uint32_t len;
+        if (!get(in, len) || len > 4096) return false;
+        id.resize(len);
+        if (!in.read(&id[0], len)) return false;
+    }
+    return true;
+}
+
+void saveImageSet(const std::string& path, const ImageSet& set) {
+    writeAtomically(path, [&](std::ofstream& out) {
+        put(out, kImageSetMagic);
+        put(out, int64_t(set.scanned));
+        putDataset(out, set.vectors);
+        for (const std::string& id : set.ids) {
+            put(out, uint32_t(id.size()));
+            out.write(id.data(), std::streamsize(id.size()));
+        }
+    });
+    
 }
