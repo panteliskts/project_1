@@ -1,4 +1,4 @@
-#include "hypercube.hpp"
+#include "core/lsh/hypercube.hpp"
 
 #include <stdexcept>
 

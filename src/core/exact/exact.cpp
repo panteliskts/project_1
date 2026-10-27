@@ -1,4 +1,4 @@
-#include "exact.hpp"
+#include "core/exact/exact.hpp"
 
 std::vector<Neighbor> ExactSearch::search(const float* query, int topN) const {
     std::vector<Neighbor> cands(data_->n);

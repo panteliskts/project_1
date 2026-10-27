@@ -1,6 +1,6 @@
 #pragma once
 
-#include "search_index.hpp"
+#include "core/common/search_index.hpp"
 
 // Brute forcing
 class ExactSearch : public SearchIndex {

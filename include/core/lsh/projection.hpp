@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "random.hpp"
+#include "core/common/random.hpp"
 
 class ProjectionHashes {
 public:

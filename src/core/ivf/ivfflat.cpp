@@ -1,4 +1,4 @@
-#include "ivfflat.hpp"
+#include "core/ivf/ivfflat.hpp"
 
 #include <stdexcept>
 

@@ -1,4 +1,4 @@
-#include "vec.hpp"
+#include "core/common/vec.hpp"
 
 #include <algorithm>
 #include <cmath>

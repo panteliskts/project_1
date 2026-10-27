@@ -1,8 +1,8 @@
 CXX      ?= g++
 CXXFLAGS ?= -std=c++17 -O3 -Wall -Wextra -pedantic
-CXXFLAGS += -MMD -MP -pthread
+CXXFLAGS += -MMD -MP -pthread -Iinclude
 
-CORE_SRC := $(wildcard src/core/*.cpp)
+CORE_SRC := $(wildcard src/core/*/*.cpp)
 CORE_OBJ := $(CORE_SRC:src/%.cpp=build/%.o)
 
 .PHONY: all clean
@@ -16,4 +16,4 @@ build/core/%.o: src/core/%.cpp
 clean:
 	rm -rf build
 
--include $(wildcard build/*/*.d)
+-include $(wildcard build/*/*/*.d)

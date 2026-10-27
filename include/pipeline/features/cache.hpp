@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "../core/vec.hpp"
+#include "core/common/vec.hpp"
 
 struct ImageSet {
     std::vector<std::string> ids;  // image_id

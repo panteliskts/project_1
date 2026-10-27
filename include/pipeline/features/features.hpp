@@ -6,7 +6,7 @@
 
 #include <opencv2/core.hpp>
 
-#include "../core/vec.hpp"
+#include "core/common/vec.hpp"
 
 enum class ImageStatus : char { Ok, Unreadable, NoDescriptors };
 

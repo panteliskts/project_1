@@ -1,11 +1,11 @@
-#include "kmeans.hpp"
+#include "core/clustering/kmeans.hpp"
 
 #include <algorithm>
 #include <limits>
 #include <stdexcept>
 
-#include "parallel.hpp"
-#include "random.hpp"
+#include "core/common/parallel.hpp"
+#include "core/common/random.hpp"
 
 int nearestCentroid(const Dataset& centroids, const float* x, float* sqDist) {
     int best = 0;

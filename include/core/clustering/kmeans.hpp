@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "vec.hpp"
+#include "core/common/vec.hpp"
 
 struct KMeansResult {
     Dataset centroids;            // dimentions

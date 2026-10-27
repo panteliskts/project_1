@@ -1,4 +1,4 @@
-#include "lsh.hpp"
+#include "core/lsh/lsh.hpp"
 
 #include <algorithm>
 #include <stdexcept>
@@ -17,7 +17,7 @@ uint64_t LSHIndex::bucketKey(int table, const float* x) const {
 
 void LSHIndex::build(const Dataset& data) {
     data_ = &data;
-    Rng rng(p_.seed);
+    Random rng(p_.seed);
     h_ = ProjectionHashes(p_.L * p_.k, data.dim, p_.w, rng);
     r_.resize(size_t(p_.L) * p_.k);
     for (uint64_t& r : r_) r = rng.next() | 1;  // odd, so never a zero multiplier

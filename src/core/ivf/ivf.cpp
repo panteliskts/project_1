@@ -1,9 +1,9 @@
-#include "ivf.hpp"
+#include "core/ivf/ivf.hpp"
 
 #include <algorithm>
 #include <cmath>
 
-#include "kmeans.hpp"
+#include "core/clustering/kmeans.hpp"
 
 void InvertedFile::train(const Dataset& data, int kclusters, uint64_t seed) {
     if (kclusters <= 0) kclusters = int(std::ceil(std::sqrt(double(data.n))));

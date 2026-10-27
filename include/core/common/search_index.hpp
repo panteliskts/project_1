@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "vec.hpp"
+#include "core/common/vec.hpp"
 
 class SearchIndex {
 public:

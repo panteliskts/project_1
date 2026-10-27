@@ -1,4 +1,4 @@
-#include "features.hpp"
+#include "pipeline/features/features.hpp"
 
 #include <algorithm>
 #include <atomic>
@@ -9,9 +9,9 @@
 #include <opencv2/features2d.hpp>
 #include <opencv2/imgcodecs.hpp>
 
-#include "../core/kmeans.hpp"
-#include "../core/parallel.hpp"
-#include "../core/random.hpp"
+#include "core/clustering/kmeans.hpp"
+#include "core/common/parallel.hpp"
+#include "core/common/random.hpp"
 
 namespace {
 
@@ -45,7 +45,7 @@ Dataset trainVocabulary(const std::vector<std::string>& paths, int K, int S, uin
         std::vector<int> order(desc.rows);
         std::iota(order.begin(), order.end(), 0);
         int take = std::min(S, desc.rows);
-        random random(mix64(seed) ^ mix64(uint64_t(i) + 1));
+        Random random(mix64(seed) ^ mix64(uint64_t(i) + 1));
         for (int j = 0; j < take; ++j) std::swap(order[j], order[j + int(random.below(desc.rows - j))]);
         samples[i].create(take, 128, CV_32F);
         for (int j = 0; j < take; ++j) desc.row(order[j]).copyTo(samples[i].row(j));

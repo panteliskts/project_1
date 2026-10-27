@@ -3,8 +3,8 @@
 #include <cstdint>
 #include <unordered_map>
 
-#include "projection.hpp"
-#include "search_index.hpp"
+#include "core/lsh/projection.hpp"
+#include "core/common/search_index.hpp"
 
 struct LSHParams {
     int k = 4;       // functions h_i combined into every g

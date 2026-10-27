@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ivf.hpp"
-#include "search_index.hpp"
+#include "core/ivf/ivf.hpp"
+#include "core/common/search_index.hpp"
 
 struct IVFFlatParams {
     int kclusters = 0;  // 0 means ceil(sqrt(n))
