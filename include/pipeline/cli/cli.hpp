@@ -20,10 +20,7 @@ struct Options {
     int S = 500;                // -S
     int D = 1000;               // -D
     uint64_t seed = 1;          // -seed
-
-
     
-
     Method method = Method::None;
     LSHParams lsh;
     HypercubeParams cube;
