@@ -146,3 +146,41 @@ ImageSet loadOrExtendMirFlickr(const Options& o, const Dataset& vocab, const std
 
 }
 
+Collections buildCollections(const Options& o, const std::vector<SplitEntry>& split) {
+    if (!o.cacheDir.empty()) fs::create_directories(o.cacheDir);
+    const std::string key = cacheKey(o);
+
+    Dataset vocab = loadOrTrainVocabulary(o, split, key);
+    ImageSet hp = loadOrComputeHPatches(o, split, vocab, key);
+    ImageSet mir;
+    if (o.D > 0) mir = loadOrExtendMirFlickr(o, vocab, key);
+
+    std::unordered_map<std::string, int> hpRow;
+    for (size_t i = 0; i < hp.ids.size(); ++i) hpRow[hp.ids[i]] = int(i);
+
+    Collections c;
+    c.queries = Dataset(0, vocab.n);
+    c.base = Dataset(0, vocab.n);
+    for (const SplitEntry& e : split) {
+        if (e.part != o.set) continue;
+        int q = int(c.querySeqs.size());
+        c.querySeqs.push_back(e.sequence);
+        appendRow(c.queries, hp.vectors.row(hpRow.at(hpImageId(e.sequence, 1))));
+        for (int k = 2; k <= 6; ++k) {
+            c.baseIds.push_back(hpImageId(e.sequence, k));
+            c.baseQuery.push_back(q);
+            appendRow(c.base, hp.vectors.row(hpRow.at(hpImageId(e.sequence, k))));
+        }
+    }
+
+    c.mirflickrCount = std::min(o.D, int(mir.ids.size()));
+    if (c.mirflickrCount < o.D)
+        std::fprintf(stderr, "warning: only %d MIRFlickr images with descriptors available (D=%d)\n",
+                     c.mirflickrCount, o.D);
+    for (int i = 0; i < c.mirflickrCount; ++i) {
+        c.baseIds.push_back(mir.ids[i]);
+        c.baseQuery.push_back(-1);
+        appendRow(c.base, mir.vectors.row(i));
+    }
+    return c;
+}
