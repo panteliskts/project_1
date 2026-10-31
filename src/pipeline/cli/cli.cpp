@@ -1,4 +1,4 @@
-#include "cli.hpp"
+#include "pipeline/cli/cli.hpp"
 
 #include <stdexcept>
 
