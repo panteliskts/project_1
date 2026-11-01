@@ -33,8 +33,6 @@
 | `pipeline/evaluation/metrics.hpp/.cpp` | Recall@5, Recall@10, AP@10, μέσοι όροι |
 | `pipeline/evaluation/output.hpp/.cpp` | αρχείο εξόδου στη μορφή της εκφώνησης |
 | `src/main.cpp` | ενώνει τα παραπάνω |
-| `tests/test_core.cpp` | έλεγχοι του πυρήνα σε συνθετικά δεδομένα (χωρίς εικόνες) |
-| `scripts/experiments.py` | εκτέλεση της πειραματικής μελέτης (μόνο standard library της Python) |
 | `split.txt` | διαχωρισμός train / validation / test |
 
 ## Μεταγλώττιση
@@ -44,27 +42,8 @@
 ```bash
 sudo apt install build-essential pkg-config libopencv-dev   # Ubuntu / Debian
 make            # φτιάχνει το ./search
-make test       # μεταγλωττίζει και τρέχει τους ελέγχους του πυρήνα (δεν θέλει OpenCV)
 make clean
 ```
-
-## Δεδομένα
-
-Τα links της εκφώνησης δεν δουλεύουν πια (το `icvl.ee.ic.ac.uk` δεν απαντά και το `mirflickr25k.zip` δίνει 404). Τα ίδια αρχεία υπάρχουν εδώ:
-
-```bash
-mkdir -p data/hpatches data/mirflickr
-# HPatches full sequences (1.3 GB), επίσημο mirror από το README του hpatches-dataset
-curl -L -o data/hpatches/hpatches-sequences-release.zip \
-  https://huggingface.co/datasets/vbalnt/hpatches/resolve/main/hpatches-sequences-release.zip
-unzip -q data/hpatches/hpatches-sequences-release.zip -d data/hpatches
-# MIRFlickr-25K (2.9 GB)
-curl -L -o data/mirflickr/mirflickr25k.zip \
-  https://press.liacs.nl/mirflickr/mirflickr25k.v3b/mirflickr25k.zip
-unzip -q data/mirflickr/mirflickr25k.zip -d data/mirflickr
-```
-
-Μετά από αυτό, `-hp data/hpatches/hpatches-sequences-release` και `-mir data/mirflickr/mirflickr`.
 
 ## Εκτέλεση
 
@@ -139,16 +118,3 @@ unzip -q data/mirflickr/mirflickr25k.zip -d data/mirflickr
 - **Hypercube.** Το bit j της κορυφής είναι $f_j(h_j(p))$, όπου η $f_j$ είναι ένα ντετερμινιστικό hash του $(j, h_j(p))$ με τιμές στο $\{0,1\}$. Έτσι μια τιμή $h_j$ που εμφανίζεται πρώτη φορά στο query παίρνει πάντα το ίδιο bit και δεν χρειάζεται πίνακας. Οι κορυφές εξετάζονται κατά αύξουσα απόσταση Hamming (πρώτα η κορυφή του query) μέχρι να ελεγχθούν `probes` κορυφές ή `M` σημεία.
 - **IVFFlat / IVFPQ.** Το k-means του ευρετηρίου εκπαιδεύεται σε όλα τα n διανύσματα της βάσης. Στο IVFPQ κβαντίζονται τα residuals $x - c(x)$ και η απόσταση υπολογίζεται με ADC: για κάθε συστάδα που ελέγχεται φτιάχνουμε πίνακα αποστάσεων $M \times 2^{nbits}$ από τα υποδιανύσματα του residual του query, οπότε η απόσταση από κάθε αποθηκευμένο κωδικό είναι άθροισμα M τιμών του πίνακα. Η κατάταξη γίνεται με αυτή την προσεγγιστική απόσταση, χωρίς re-ranking.
 - **Αναπαραγωγιμότητα.** Όλα τα τυχαία βήματα ξεκινούν από το `-seed`. Οι κατανομές `std::normal_distribution` κλπ. δίνουν διαφορετικούς αριθμούς σε libstdc++ και libc++, γι' αυτό ο πυρήνας παράγει μόνος του ομοιόμορφες και κανονικές τιμές από το `std::mt19937_64`.
-
-## Πειραματική μελέτη
-
-```bash
-python3 scripts/experiments.py vocab            # επιλογή K με Exact στο validation, D = 1000
-python3 scripts/experiments.py sweep -vocab 256 # πλέγματα παραμέτρων στο validation για κάθε D
-python3 scripts/experiments.py test  -vocab 256 # οι επιλεγμένες παράμετροι στο test set (διάμεσος χρόνος 3 εκτελέσεων)
-python3 scripts/experiments.py report -vocab 256 # πίνακες και δεδομένα γραφημάτων για την αναφορά
-```
-
-Τα αποτελέσματα γράφονται στο `results/` (`vocab.csv`, `validation.csv`, `selected.csv`, `test.csv`, ενώ τα αρχεία εξόδου κάθε εκτέλεσης μένουν στο `results/runs/`, που δεν μπαίνει στο git). Για κάθε μέθοδο και κάθε D διαλέγουμε στο validation τη γρηγορότερη ρύθμιση που φτάνει τουλάχιστον το 95% του mAP@10 της Exact Search, ή τη ρύθμιση με το μεγαλύτερο mAP@10 αν καμία δεν φτάνει εκεί. Το K = 256 βγήκε από το στάδιο `vocab`: είναι το μικρότερο K με mAP@10 το πολύ 0.005 κάτω από το καλύτερο.
-
-Η αναφορά είναι το `report/report.pdf` (πρότυπο IEEE δύο στηλών). Οι πίνακες και τα γραφήματα διαβάζουν τα αρχεία του `report/generated/`, που παράγει το στάδιο `report`. Μεταγλωττίζεται με XeLaTeX, π.χ. `cd report && tectonic report.tex`, γιατί χρησιμοποιεί τη γραμματοσειρά Times New Roman μέσω fontspec για ελληνικά και λατινικά.
