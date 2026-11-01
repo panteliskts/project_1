@@ -11,6 +11,7 @@ void IVFFlatIndex::build(const Dataset& data) {
     ivf_.train(data, p_.kclusters, p_.seed);
 }
 
+// Μαζεύει όλα τα σημεία των nprobe πιο κοντινών clusters και υπολογίζει ακριβή απόσταση σε καθένα
 std::vector<Neighbor> IVFFlatIndex::search(const float* query, int topN) const {
     std::vector<Neighbor> cands;
     for (int c : ivf_.probe(query, p_.nprobe))

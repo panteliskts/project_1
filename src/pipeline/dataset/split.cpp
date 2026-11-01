@@ -3,6 +3,7 @@
 #include <sstream>
 #include <stdexcept>
 
+// Διαβάζει το αρχείο split γραμμή προς γραμμή: μία ακολουθία και το σύνολό της ανά γραμμή
 std::vector<SplitEntry> readSplit(const std::string& path) {
     std::ifstream in(path);
     if (!in) throw std::runtime_error("cannot open split file " + path);

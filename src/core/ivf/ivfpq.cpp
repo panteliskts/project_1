@@ -20,6 +20,8 @@ void IVFPQIndex::build(const Dataset& data) {
 
     codebooks_.assign(p_.M, Dataset());
     codes_.assign(size_t(data.n) * p_.M, 0);
+    // Για κάθε υποδιάνυσμα m, αφαιρεί το κέντρο του cluster από το σημείο (αυτό είναι το residual)
+    // και κάνει k-means πάνω στα residuals για να φτιάξει το υποκωδικοβιβλίο του m
     for (int m = 0; m < p_.M; ++m) {
         // Sub-vector m of every residual.
         Dataset sub(data.n, subDim_);
@@ -29,6 +31,7 @@ void IVFPQIndex::build(const Dataset& data) {
             float* out = sub.row(i);
             for (int d = 0; d < subDim_; ++d) out[d] = x[d] - c[d];
         }
+        // Κάθε residual κωδικοποιείται με τον δείκτη του κοντινότερου υποκέντρου
         KMeansResult km = kmeans(sub, 1 << p_.nbits, p_.seed + 1 + m);
         for (int i = 0; i < data.n; ++i) codes_[size_t(i) * p_.M + m] = uint16_t(km.assignment[i]);
         codebooks_[m] = std::move(km.centroids);
@@ -36,6 +39,8 @@ void IVFPQIndex::build(const Dataset& data) {
     ksub_ = codebooks_[0].n; 
 }
 
+// Υπολογίζει έναν πίνακα αποστάσεων ανάμεσα στο residual και τα υποκέντρα, μία φορά ανά cluster,
+// μετά για κάθε υποψήφιο προσθέτει M τιμές από τον πίνακα, χωρίς να αποκωδικοποιήσει τίποτα (αυτό λέγεται ADC)
 std::vector<Neighbor> IVFPQIndex::search(const float* query, int topN) const {
     std::vector<Neighbor> cands;
     std::vector<float> residual(dim_);

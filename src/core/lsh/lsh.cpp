@@ -8,6 +8,7 @@ LSHIndex::LSHIndex(const LSHParams& params) : p_(params) {
         throw std::invalid_argument("LSH: k and L must be positive and w > 0");
 }
 
+// Συνδυάζει τις k τιμές h_i σε ένα κλειδί για τον κουβά, αυτό είναι η συνάρτηση g
 uint64_t LSHIndex::bucketKey(int table, const float* x) const {
     uint64_t key = 0;
     for (int i = table * p_.k; i < (table + 1) * p_.k; ++i)
@@ -15,6 +16,7 @@ uint64_t LSHIndex::bucketKey(int table, const float* x) const {
     return key;
 }
 
+// Χτίζει L πίνακες κατακερματισμού, τοποθετώντας κάθε σημείο στον κουβά του
 void LSHIndex::build(const Dataset& data) {
     data_ = &data;
     Random rng(p_.seed);
@@ -27,6 +29,8 @@ void LSHIndex::build(const Dataset& data) {
         for (int i = 0; i < data.n; ++i) tables_[l][bucketKey(l, data.row(i))].push_back(i);
 }
 
+// Μαζεύει τους υποψήφιους από όλους τους πίνακες, αφαιρεί τα διπλότυπα,
+// και υπολογίζει πραγματική απόσταση μόνο σε αυτούς, όχι σε όλη τη βάση
 std::vector<Neighbor> LSHIndex::search(const float* query, int topN) const {
     std::vector<int> ids;
     for (int l = 0; l < p_.L; ++l) {

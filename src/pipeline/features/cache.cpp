@@ -7,8 +7,9 @@
 
 namespace {
 
-const uint32_t kDatasetMagic = 0x56454331;  
-const uint32_t kImageSetMagic = 0x494d4731;  
+// Αριθμοί στην αρχή του αρχείου, για να ξέρουμε τι μορφή έχει
+const uint32_t kDatasetMagic = 0x56454331;
+const uint32_t kImageSetMagic = 0x494d4731;
 
 template <class T>
 void put(std::ofstream& out, const T& v) {
@@ -33,6 +34,8 @@ bool getDataset(std::ifstream& in, Dataset& d) {
     return bool(in.read(reinterpret_cast<char*>(d.data.data()), std::streamsize(d.data.size() * sizeof(float))));
 }
 
+// Γράφει πρώτα σε προσωρινό αρχείο και μετά το μετονομάζει, ώστε ένα μισοτελειωμένο
+// αρχείο να μη χαλάσει την cache
 template <class Fn>
 void writeAtomically(const std::string& path, Fn body) {
     std::string tmp = path + ".tmp";

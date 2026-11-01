@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+// Για κάθε σχετική εικόνα στις πρώτες 10 θέσεις, προσθέτει στο Recall@5, στο Recall@10 και στο AP@10
 QueryMetrics evaluateRanking(const std::vector<bool>& relevant, int numRelevant) {
     QueryMetrics m;
     int hits = 0;
@@ -18,6 +19,7 @@ QueryMetrics evaluateRanking(const std::vector<bool>& relevant, int numRelevant)
     return m;
 }
 
+// Αθροίζει τα μετρικά των queries που περνάνε το keep και διαιρεί με το πλήθος τους
 Summary summarize(const std::vector<QueryResult>& results, const std::function<bool(const QueryResult&)>& keep) {
     Summary s;
     for (const QueryResult& r : results) {

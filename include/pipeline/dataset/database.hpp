@@ -7,6 +7,7 @@
 #include "pipeline/cli/cli.hpp"
 #include "pipeline/dataset/split.hpp"
 
+// Τα queries και η βάση, έτοιμα για αναζήτηση
 struct Collections {
     std::vector<std::string> querySeqs;  
     Dataset queries;
@@ -19,4 +20,5 @@ struct Collections {
 };
 
 
+// Φτιάχνει το λεξιλόγιο, τα διανύσματα και τα Collections για το ζητούμενο σύνολο
 Collections buildCollections(const Options& o, const std::vector<SplitEntry>& split);

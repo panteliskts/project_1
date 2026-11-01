@@ -42,6 +42,7 @@ std::string dirId(const std::string& dir) {
 }
 
 
+// Κλειδί της cache: αλλάζει αν αλλάξει το λεξιλόγιο ή το σύνολο εκπαίδευσης, όχι αν αλλάξει το D
 std::string cacheKey(const Options& o) {
     std::ifstream in(o.splitFile, std::ios::binary);
     std::ostringstream content;
@@ -51,6 +52,7 @@ std::string cacheKey(const Options& o) {
 }
 
 
+// Όλα τα αρχεία imN.jpg του MIRFlickr, ταξινομημένα κατά αριθμό N
 std::vector<std::string> listMirFlickr(const std::string& dir) {
     std::vector<std::pair<long, std::string>> files;
     for (const fs::directory_entry& e : fs::directory_iterator(dir)) {
@@ -66,6 +68,7 @@ std::vector<std::string> listMirFlickr(const std::string& dir) {
     return names;
 }
 
+// Αν υπάρχει ήδη στην cache το ίδιο λεξιλόγιο, το διαβάζει, αλλιώς το εκπαιδεύει και το αποθηκεύει
 Dataset loadOrTrainVocabulary(const Options& o, const std::vector<SplitEntry>& split, const std::string& key) {
     std::string path = o.cacheDir + "/vocab_" + key + ".bin";
     Dataset vocab;
@@ -82,6 +85,7 @@ Dataset loadOrTrainVocabulary(const Options& o, const std::vector<SplitEntry>& s
 }
 
 
+// Τα διανύσματα των εικόνων validation και test, από την cache ή υπολογισμένα τώρα
 ImageSet loadOrComputeHPatches(const Options& o, const std::vector<SplitEntry>& split, const Dataset& vocab,
                                const std::string& key) {
     std::string path = o.cacheDir + "/hpatches_" + key + ".bin";
@@ -108,6 +112,8 @@ ImageSet loadOrComputeHPatches(const Options& o, const std::vector<SplitEntry>& 
 }
 
 
+// Η cache του MIRFlickr μεγαλώνει σταδιακά: αν χρειάζονται περισσότερες εικόνες από πριν,
+// υπολογίζει μόνο τις καινούριες
 ImageSet loadOrExtendMirFlickr(const Options& o, const Dataset& vocab, const std::string& key) {
     std::string path = o.cacheDir + "/mirflickr_" + key + "_mir" + hash8(dirId(o.mirDir)) + ".bin";
     ImageSet mir;
@@ -146,6 +152,8 @@ ImageSet loadOrExtendMirFlickr(const Options& o, const Dataset& vocab, const std
 
 }
 
+// Ενώνει το λεξιλόγιο, τις εικόνες HPatches του ζητούμενου συνόλου και τις πρώτες D εικόνες
+// MIRFlickr σε queries και βάση
 Collections buildCollections(const Options& o, const std::vector<SplitEntry>& split) {
     if (!o.cacheDir.empty()) fs::create_directories(o.cacheDir);
     const std::string key = cacheKey(o);

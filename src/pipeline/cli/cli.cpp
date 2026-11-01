@@ -4,6 +4,7 @@
 
 namespace {
 
+// Μετατρέπει το string σε ακέραιο, με μήνυμα λάθους αν δεν είναι έγκυρος αριθμός
 int toInt(const std::string& flag, const std::string& value) {
     size_t used = 0;
     int v = 0;
@@ -16,6 +17,7 @@ int toInt(const std::string& flag, const std::string& value) {
     return v;
 }
 
+// Το ίδιο για δεκαδικό αριθμό
 double toDouble(const std::string& flag, const std::string& value) {
     size_t used = 0;
     double v = 0.0;
@@ -28,6 +30,7 @@ double toDouble(const std::string& flag, const std::string& value) {
     return v;
 }
 
+// Επιτρέπει μόνο μία μέθοδο αναζήτησης ανά εκτέλεση
 void selectMethod(Options& o, Method m) {
     if (o.method != Method::None && o.method != m) throw std::runtime_error("choose exactly one search method");
     o.method = m;
@@ -45,6 +48,7 @@ std::string usage() {
            "              | -ivfpq     [-kclusters int] [-nprobe int] [-M int] [-nbits int]\n";
 }
 
+// Διαβάζει όλα τα flags, γεμίζει το Options και ελέγχει ότι δόθηκαν τα απαραίτητα
 Options parseArgs(int argc, char** argv) {
     Options o;
     for (int i = 1; i < argc; ++i) {

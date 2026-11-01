@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <stdexcept>
 
+// Μία ενότητα ανά query με την κατάταξη και τα μετρικά του, και οι μέσοι όροι στο τέλος
 void writeResults(const std::string& path, const std::string& method, const std::vector<QueryResult>& results) {
     std::ofstream out(path);
     if (!out) throw std::runtime_error("cannot write output file " + path);

@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 
+// Ο βρόχος χωρίζεται σε 4 αθροίσματα παράλληλα, για να τρέχει πιο γρήγορα
 float squaredL2(const float* a, const float* b, int dim) {
     float s0 = 0.0f, s1 = 0.0f, s2 = 0.0f, s3 = 0.0f;
     int i = 0;
@@ -23,6 +24,7 @@ float squaredL2(const float* a, const float* b, int dim) {
     return (s0 + s1) + (s2 + s3);
 }
 
+// Το partial_sort ταξινομεί μόνο τα πρώτα topN, η ρίζα υπολογίζεται μετά μόνο σε αυτά
 std::vector<Neighbor> topNeighbors(std::vector<Neighbor>& cands, int topN) {
     auto closer = [](const Neighbor& x, const Neighbor& y) {
         return x.dist < y.dist || (x.dist == y.dist && x.id < y.id);

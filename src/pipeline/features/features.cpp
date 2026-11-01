@@ -15,8 +15,10 @@
 
 namespace {
 
+// Το δικό μας parallelFor αναλαμβάνει τα threads, όχι η OpenCV
 void disableOpenCvThreads() { cv::setNumThreads(0); }
 
+// Τυπώνει την πρόοδο στο stderr κάθε 500 εικόνες
 void progress(const char* what, int done, int total) {
     if (done % 500 == 0 || done == total) std::fprintf(stderr, "\r  %s: %d/%d", what, done, total);
     if (done == total) std::fprintf(stderr, "\n");
@@ -24,6 +26,7 @@ void progress(const char* what, int done, int total) {
 
 }  // namespace
 
+// Διαβάζει την εικόνα σε grayscale και τρέχει το SIFT της OpenCV
 bool extractSift(const std::string& path, cv::Mat& descriptors) {
     cv::Mat image = cv::imread(path, cv::IMREAD_GRAYSCALE);
     if (image.empty()) return false;
@@ -32,6 +35,7 @@ bool extractSift(const std::string& path, cv::Mat& descriptors) {
     return true;
 }
 
+// Παίρνει έως S τυχαίους descriptors από κάθε εικόνα training και τρέχει k-means πάνω σε όλους μαζί
 Dataset trainVocabulary(const std::vector<std::string>& paths, int K, int S, uint64_t seed) {
     disableOpenCvThreads();
     const int n = int(paths.size());
@@ -65,6 +69,7 @@ Dataset trainVocabulary(const std::vector<std::string>& paths, int K, int S, uin
     return kmeans(points, K, seed).centroids;
 }
 
+// Κάθε descriptor ψηφίζει το κοντινότερο κέντρο, το ιστόγραμμα κανονικοποιείται στο άθροισμα 1
 void bovwVector(const cv::Mat& descriptors, const Dataset& vocab, float* out) {
     std::fill(out, out + vocab.n, 0.0f);
     if (descriptors.rows == 0) return;

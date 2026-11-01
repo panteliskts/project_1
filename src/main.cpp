@@ -22,6 +22,7 @@ double msSince(Clock::time_point t0) {
     return std::chrono::duration<double, std::milli>(Clock::now() - t0).count();
 }
 
+// Φτιάχνει τη μέθοδο αναζήτησης που επιλέχθηκε, με τις παραμέτρους της
 std::unique_ptr<SearchIndex> makeIndex(const Options& o) {
     switch (o.method) {
         case Method::Exact: return std::make_unique<ExactSearch>();
@@ -34,6 +35,7 @@ std::unique_ptr<SearchIndex> makeIndex(const Options& o) {
     throw std::runtime_error("no search method selected");
 }
 
+// Τυπώνει μία γραμμή με τους μέσους όρους στο stderr
 void printSummary(const char* label, const Summary& s) {
     std::printf("  %-13s queries=%2d  R@5=%.4f  R@10=%.4f  mAP@10=%.4f  time=%.4f ms  (<10 results: %d)\n", label,
                 s.queries, s.recall5, s.recall10, s.map10, s.ms, s.shortLists);
@@ -56,6 +58,8 @@ int main(int argc, char** argv) {
         index->build(col.base);
         double buildMs = msSince(t0);
 
+        // Χτίζει το ευρετήριο μία φορά και μετά τρέχει κάθε query ξεχωριστά,
+        // μετρώντας μόνο τον χρόνο της search
         std::vector<QueryResult> results;
         for (int q = 0; q < col.queries.n; ++q) {
             t0 = Clock::now();
@@ -68,6 +72,7 @@ int main(int argc, char** argv) {
             std::vector<bool> relevant;
             for (const Neighbor& nb : found) {
                 r.ranked.push_back(col.baseIds[nb.id]);
+                // Σχετική είναι η εικόνα της βάσης που ανήκει στην ίδια ακολουθία HPatches με το query
                 relevant.push_back(col.baseQuery[nb.id] == q);
             }
             r.metrics = evaluateRanking(relevant);

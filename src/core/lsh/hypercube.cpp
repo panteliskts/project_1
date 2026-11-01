@@ -9,6 +9,7 @@ HypercubeIndex::HypercubeIndex(const HypercubeParams& params) : p_(params) {
         throw std::invalid_argument("Hypercube: w, M and probes must be positive");
 }
 
+// Κάθε προβολή h_j γίνεται ένα bit, σαν ένα τυχαίο νόμισμα που εξαρτάται από ένα salt
 uint64_t HypercubeIndex::vertex(const float* x) const {
     uint64_t v = 0;
     for (int j = 0; j < p_.kproj; ++j) {
@@ -18,6 +19,7 @@ uint64_t HypercubeIndex::vertex(const float* x) const {
     return v;
 }
 
+// Τοποθετεί κάθε σημείο στην κορυφή του υπερκύβου που δίνει το vertex()
 void HypercubeIndex::build(const Dataset& data) {
     data_ = &data;
     Random Random(p_.seed);
@@ -45,10 +47,13 @@ std::vector<Neighbor> HypercubeIndex::search(const float* query, int topN) const
     };
 
     // Hamming radius r
+    // Ελέγχει πρώτα την κορυφή του query, μετά τις διπλανές κορυφές όλο και πιο μακριά,
+    // μέχρι να γεμίσουν τα probes ή να μαζευτούν M υποψήφια σημεία
     bool more = visit(home);
     for (int r = 1; r <= p_.kproj && more; ++r) {
         for (uint64_t mask = (uint64_t(1) << r) - 1; mask < numVertices && more;) {
             more = visit(home ^ mask);
+            // Gosper's hack: φτιάχνει όλες τις μάσκες με r bits στη σειρά, χωρίς αναδρομή
             uint64_t low = mask & (~mask + 1);
             uint64_t ripple = mask + low;
             mask = (((ripple ^ mask) >> 2) / low) | ripple;

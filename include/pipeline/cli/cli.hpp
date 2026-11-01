@@ -8,7 +8,9 @@
 #include "../../core/ivf/ivfpq.hpp"
 #include "../../core/lsh/lsh.hpp"
 
+// Ποια μέθοδος αναζήτησης επιλέχθηκε από τη γραμμή εντολών
 enum class Method { None, Exact, LSH, Hypercube, IVFFlat, IVFPQ };
+// Όλες οι παράμετροι της γραμμής εντολών, μία ανά flag
 struct Options {
     std::string hpDir;          // -hp
     std::string mirDir;         // -mir
