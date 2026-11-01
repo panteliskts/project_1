@@ -3,6 +3,7 @@
 #include "core/common/search_index.hpp"
 
 // Brute forcing
+// Ελέγχει όλα τα σημεία ένα προς ένα, χωρίς καμία προσέγγιση
 class ExactSearch : public SearchIndex {
 public:
     std::string name() const override { return "Exact Search"; }

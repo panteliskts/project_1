@@ -14,6 +14,7 @@ struct LSHParams {
 };
 
 // Euclidean LSH with L tables
+// LSH με L πίνακες κατακερματισμού
 class LSHIndex : public SearchIndex {
 public:
     explicit LSHIndex(const LSHParams& params);

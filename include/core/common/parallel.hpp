@@ -5,6 +5,7 @@
 #include <thread>
 #include <vector>
 
+// Μοιράζει τη δουλειά σε threads, κάθε thread παίρνει τον επόμενο δείκτη μόλις τελειώσει τον δικό του
 template <class Fn>
 void parallelFor(int begin, int end, Fn fn, int maxThreads = 0) {
     if (end <= begin) return;

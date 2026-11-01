@@ -9,7 +9,8 @@ struct IVFFlatParams {
     uint64_t seed = 1;
 };
 
-// Inverted file with exact distances inside the nprobe closest clusters.
+
+// Μέσα στα nprobe πιο κοντινά clusters, υπολογίζει τις πραγματικές αποστάσεις
 class IVFFlatIndex : public SearchIndex {
 public:
     explicit IVFFlatIndex(const IVFFlatParams& params);

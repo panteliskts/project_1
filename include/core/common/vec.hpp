@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <vector>
 
+// Πίνακας δεδομένων με n γραμμές και dim στήλες, αποθηκευμένος σε μία σειρά (row-major)
 struct Dataset {
     int n = 0;
     int dim = 0;
@@ -20,6 +21,8 @@ struct Neighbor {
     float dist;
 };
 
+// Το τετράγωνο της ευκλείδειας απόστασης, χωρίς ρίζα, αρκεί για να συγκρίνουμε
 float squaredL2(const float* a, const float* b, int dim);
 
+// Οι topN πλησιέστεροι γείτονες, ταξινομημένοι από τον πιο κοντινό
 std::vector<Neighbor> topNeighbors(std::vector<Neighbor>& cands, int topN);

@@ -38,6 +38,8 @@ void forEachPoint(int n, size_t work, Fn fn) {
 }
 
 
+// k-means++: όσο πιο μακριά είναι ένα σημείο από τα κέντρα που έχουν ήδη επιλεγεί,
+// τόσο πιο πιθανό είναι να επιλεγεί ως το επόμενο κέντρο
 Dataset seedCentroids(const Dataset& points, int k, Random& Random) {
     Dataset centroids(k, points.dim);
     std::vector<double> minDist(points.n, std::numeric_limits<double>::max());
@@ -91,6 +93,7 @@ KMeansResult kmeans(const Dataset& points, int k, uint64_t seed, int maxIters) {
         int changed = 0;
         for (int i = 0; i < points.n; ++i) changed += newAssign[i] != res.assignment[i];
         res.assignment.swap(newAssign);
+        // Σταματά όταν αλλάζουν πολύ λίγες αναθέσεις ή τελειώσουν οι επαναλήψεις
         if (changed <= points.n / 1000 || iter == maxIters) break;
 
         std::vector<double> sums(size_t(k) * dim, 0.0);
@@ -108,6 +111,7 @@ KMeansResult kmeans(const Dataset& points, int k, uint64_t seed, int maxIters) {
                 const double* s = &sums[size_t(c) * dim];
                 for (int d = 0; d < dim; ++d) centre[d] = float(s[d] / counts[c]);
             } else {
+                // Αν ένα cluster αδειάσει, παίρνει το πιο απομακρυσμένο σημείο ως νέο κέντρο
                 int far = int(std::max_element(dist.begin(), dist.end()) - dist.begin());
                 copyRow(points, far, res.centroids, c);
                 dist[far] = 0.0f;

@@ -5,6 +5,7 @@
 
 #include "core/common/vec.hpp"
 
+// Κοινή διεπαφή για όλες τις μεθόδους αναζήτησης: Exact, LSH, Hypercube, IVFFlat, IVFPQ
 class SearchIndex {
 public:
     virtual ~SearchIndex() = default;

@@ -5,6 +5,7 @@
 
 #include "core/common/random.hpp"
 
+// Τυχαίες προβολές πάνω σε ευθεία γραμμή, μία για κάθε συνάρτηση h_i
 class ProjectionHashes {
 public:
     ProjectionHashes() = default;

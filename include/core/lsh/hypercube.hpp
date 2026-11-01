@@ -15,6 +15,7 @@ struct HypercubeParams {
 };
 
 // Random projection on the hypercube {0,1}^d'
+// Προβάλλει κάθε σημείο σε μια κορυφή υπερκύβου, η αναζήτηση ψάχνει κοντινές κορυφές με απόσταση Hamming
 class HypercubeIndex : public SearchIndex {
 public:
     explicit HypercubeIndex(const HypercubeParams& params);
