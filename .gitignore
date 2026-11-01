@@ -4,3 +4,7 @@ cache/
 build/
 *.o
 search
+/hpatches
+/mirflickr
+/split.txt
+results/runs/
