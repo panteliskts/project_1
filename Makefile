@@ -8,6 +8,9 @@ OPENCV_PC     := $(shell pkg-config --exists opencv4 && echo opencv4 || echo ope
 OPENCV_CFLAGS := $(patsubst -I%,-isystem %,$(shell pkg-config --cflags $(OPENCV_PC)))
 OPENCV_LIBS   := $(shell pkg-config --libs $(OPENCV_PC))
 
+EIGEN_CFLAGS := $(patsubst -I%,-isystem %,$(shell pkg-config --cflags eigen3))
+CXXFLAGS     += $(EIGEN_CFLAGS)
+
 CORE_SRC := $(wildcard src/core/*/*.cpp)
 PIPE_SRC := $(wildcard src/pipeline/*/*.cpp) src/main.cpp
 CORE_OBJ := $(CORE_SRC:src/%.cpp=build/%.o)
