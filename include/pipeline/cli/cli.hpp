@@ -1,12 +1,15 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 #include <string>
 
 #include "../../core/lsh/hypercube.hpp"
 #include "../../core/ivf/ivfflat.hpp"
 #include "../../core/ivf/ivfpq.hpp"
 #include "../../core/lsh/lsh.hpp"
+#include "../../core/common/search_index.hpp"
+#include "../../core/geometry/ransac.hpp"
 
 // Ποια μέθοδος αναζήτησης επιλέχθηκε από τη γραμμή εντολών
 enum class Method { None, Exact, LSH, Hypercube, IVFFlat, IVFPQ };
@@ -28,8 +31,17 @@ struct Options {
     HypercubeParams cube;
     IVFFlatParams ivfflat;
     IVFPQParams ivfpq;
+
+
+    int C = 50;                 
+    double rho = 0.8;           
+    RansacParams ransac;        
+    bool byMatches = false;     
 };
 
-Options parseArgs(int argc, char** argv);
 
-std::string usage();
+Options parseArgs(int argc, char** argv, bool verify = false);
+
+std::string usage(bool verify = false);
+
+std::unique_ptr<SearchIndex> makeIndex(const Options& o);

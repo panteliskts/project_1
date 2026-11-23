@@ -173,10 +173,12 @@ Collections buildCollections(const Options& o, const std::vector<SplitEntry>& sp
         if (e.part != o.set) continue;
         int q = int(c.querySeqs.size());
         c.querySeqs.push_back(e.sequence);
+        c.queryPaths.push_back(hpImagePath(o, e.sequence, 1));
         appendRow(c.queries, hp.vectors.row(hpRow.at(hpImageId(e.sequence, 1))));
         for (int k = 2; k <= 6; ++k) {
             c.baseIds.push_back(hpImageId(e.sequence, k));
             c.baseQuery.push_back(q);
+            c.basePaths.push_back(hpImagePath(o, e.sequence, k));
             appendRow(c.base, hp.vectors.row(hpRow.at(hpImageId(e.sequence, k))));
         }
     }
@@ -188,6 +190,7 @@ Collections buildCollections(const Options& o, const std::vector<SplitEntry>& sp
     for (int i = 0; i < c.mirflickrCount; ++i) {
         c.baseIds.push_back(mir.ids[i]);
         c.baseQuery.push_back(-1);
+        c.basePaths.push_back(o.mirDir + "/" + mir.ids[i]);
         appendRow(c.base, mir.vectors.row(i));
     }
     return c;
